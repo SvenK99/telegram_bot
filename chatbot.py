@@ -9,25 +9,25 @@ from telegram import Bot
 from telegram.utils.request import Request
 from HKBU_chatgpt import HKBU_ChatGPT
 
-# 在国内要设置代理，updater对象也要更新
-proxy1 = {
-    'proxy_url': 'http://127.0.0.1:10809',  # 代理地址
-}
-
-request = Request(proxy_url=proxy1['proxy_url'])
+# # 在国内要设置代理，updater对象也要更新
+# proxy1 = {
+#     'proxy_url': 'http://127.0.0.1:10809',  # 代理地址
+# }
+#
+# request = Request(proxy_url=proxy1['proxy_url'])
 def main():
     # Load your token and create an Updater for your Bot
     config = configparser.ConfigParser()
     config.read('config.ini')
 
     # 在香港用这个updater
-    # updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
+    updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
 
-    #在国内用这个updater,python-telegram-bot 13.7 不能直接用updater来传入request需要经过Bot对象
-    ## 创建Bot对象时传入代理
-    bot = Bot(token=config['TELEGRAM']['ACCESS_TOKEN'], request=request)
-    ## 使用Bot对象来创建Updater对象
-    updater = Updater(bot=bot, use_context=True)
+    # #在国内用这个updater,python-telegram-bot 13.7 不能直接用updater来传入request需要经过Bot对象
+    # ## 创建Bot对象时传入代理
+    # bot = Bot(token=config['TELEGRAM']['ACCESS_TOKEN'], request=request)
+    # ## 使用Bot对象来创建Updater对象
+    # updater = Updater(bot=bot, use_context=True)
 
     dispatcher = updater.dispatcher
     global redis1
@@ -51,6 +51,7 @@ def main():
     dispatcher.add_handler(chatgpt_handler)
 
     # on different commands - answer in Telegram
+    dispatcher.add_handler(CommandHandler("hello", hello))
     dispatcher.add_handler(CommandHandler("delete", delete))
     dispatcher.add_handler(CommandHandler("add", add))
     dispatcher.add_handler(CommandHandler("help", help_command))
@@ -73,6 +74,9 @@ def echo(update, context):
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text('Helping you helping you.')
+def hello(update: Update, context: CallbackContext) -> None:
+    msg = context.args[0]
+    update.message.reply_text('Good day, '+msg+'!')
 def add(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /add is issued."""
     try:
@@ -90,13 +94,12 @@ def delete(update: Update, context: CallbackContext) -> None:
         global redis1
         logging.info(context.args[0])
         msg = context.args[0] # /add keyword <-- this should store the keyword
-        tempmsg=msg
         if redis1.get(msg):
             deleted_count=int(redis1.get(msg))
         else:
             deleted_count=0
         redis1.delete(msg)
-        # print(deleted_count)*
+        # print(deleted_count)
         if deleted_count>0 and deleted_count<=1 :
             update.message.reply_text('The keyword '+ msg +' has been deleted '+ str(deleted_count)+' time')
         elif deleted_count>1:
