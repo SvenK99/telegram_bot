@@ -8,7 +8,10 @@ jobs:
     runs-on: ubuntu-latest  
     steps:  
       - name: 检出代码库  
-        uses: actions/checkout@v3  
+        uses: actions/checkout@v3
+
+      - name: Install Fly CLI
+        run: curl -L https://fly.io/install.sh | sh
 
       - name: 执行 Fly 部署  
         env:  
