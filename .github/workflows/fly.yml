@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: chatbot24466700  # 这里需要正确缩进
+    name: Deploy app  # 这里需要正确缩进
     runs-on: ubuntu-latest
     concurrency: deploy-group # optional: ensure only one action runs at a time
 
@@ -16,6 +16,6 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - run: flyctl deploy --remote-only
+      - run: flyctl deploy --remote-only -a chatbot24466700
         env:
           FLY_API_TOKEN: ${{ secrets.FLY }}
