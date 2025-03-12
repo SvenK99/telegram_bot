@@ -16,6 +16,6 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - run: flyctl deploy --remote-only -a chatbot24466700
+      - run: flyctl deploy --remote-only -a 3_commit
         env:
           FLY_API_TOKEN: ${{ secrets.FLY }}
