@@ -1,0 +1,16 @@
+name: Fly.io 自动部署  
+on:  
+  push:  
+    branches: [ main ]  # 默认分支配置
+
+jobs:  
+  deploy:  
+    runs-on: ubuntu-latest  
+    steps:  
+      - name: 检出代码库  
+        uses: actions/checkout@v3  
+
+      - name: 执行 Fly 部署  
+        env:  
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  
+        run: fly deploy  
