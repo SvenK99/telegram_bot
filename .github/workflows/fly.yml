@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy app  # 这里需要正确缩进
+    name: chatbot24466700  # 这里需要正确缩进
     runs-on: ubuntu-latest
     concurrency: deploy-group # optional: ensure only one action runs at a time
 
